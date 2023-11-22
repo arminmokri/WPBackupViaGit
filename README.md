@@ -1,5 +1,5 @@
 # WPBackupViaGit
-**WPBackupViaGit** is for making backup and restore on a git account by any frequency.
+**WPBackupViaGit** is for making backup and restore on a git account with any frequency.
 
 ## Features
 - Backup from databases
