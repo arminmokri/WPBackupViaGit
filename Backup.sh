@@ -8,6 +8,7 @@ exit_code=0
 
 source "${this_dir_path}/Backup.config"
 
+git_url=$GitURL
 git_username=${Git[0]}
 git_password=${Git[1]}
 git_repo_name=${Git[2]}
@@ -114,7 +115,7 @@ if [ $exit_code -eq 0 ]; then
       cd $this_dir_path >/dev/null 2>&1 && \
       git add -A >/dev/null 2>&1 && \
       git commit -m "backup point ${datetime_now}" >/dev/null 2>&1 && \
-      git push "https://${git_username}:${git_password}@github.com/${git_username}/${git_repo_name}.git" >/dev/null 2>&1 && \
+      git push "https://${git_username}:${git_password}@${git_url}/${git_username}/${git_repo_name}.git" >/dev/null 2>&1 && \
       cd - >/dev/null 2>&1 \
    )
    res_status=$?
