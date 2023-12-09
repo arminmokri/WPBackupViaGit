@@ -4,9 +4,10 @@
 ## Features
 - Backup from databases
 - Backup from files and dirs
-- Sync backup point with git account
-- Restore backup point from git account
-- common use is for WordPress but it could be able for any other things that need a backup process
+- Sync backup/restore point with git account
+- See all backup/restore points
+- Restore to backup/restore point from the git account
+- common use is for WordPress but it could be able for any other things that need a backup/restore process
 
 ## Install and Run the Project
 ### Backup
@@ -37,7 +38,7 @@ Index  Date       Time         Commit ID                                    Comm
 2)     2023-12-08 03:00:02     c5e54499c78d3794e4fa26b68d2db8bd62cfc0b2     backup point 2023/12/08 03:00:05
 ...
 ```
-4. find your restore point from the list.
+4. find your backup/restore point from the list.
 5. for restoration we have some commands that I make examples and explanation
    - restore to the lastest commit `./your_repo_dir/Restore.sh --action restore --latest`
    - restore based on the commit id `./your_repo_dir/Restore.sh --action restore --restore-point-type commit-id --restore-point c5e54499c78d3794e4fa26b68d2db8bd62cfc0b2`
