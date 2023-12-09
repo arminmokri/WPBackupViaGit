@@ -26,7 +26,7 @@ dumpDatabaseTables() { # db_name, db_username, db_password, dir_path
     local db_password=$3
     local dir_path=$4
     local res_status=1
-    local res1_str=$(mysql -u "${db_username}" -p"${db_password}" -N -B -e "show tables from ${db_name}" 2>/dev/null)
+    local res1_str=$(mysql -u "${db_username}" -p"${db_password}" -N -B -e "SHOW TABLES FROM ${db_name};" 2>/dev/null)
     local res1_status=$?
     local res2_str=""
     local res2_status=0
