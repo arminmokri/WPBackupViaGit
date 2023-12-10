@@ -1,43 +1,85 @@
 #!/bin/bash
 
-gitCheckConfig() { # git_url, git_username, git_password, git_repo_name, dir_path
+gitCheckConfig() { # git_url, git_user_email, git_user_name, git_username, git_password, git_repo_name, dir_path
     local git_url=$1
-    local git_username=$2
-    local git_password=$3
-    local git_repo_name=$4
-    local dir_path=$5
+    local git_user_email=$2
+    local git_user_name=$3
+    local git_username=$4
+    local git_password=$5
+    local git_repo_name=$6
+    local dir_path=$7
     local git_credential="https://${git_username}:${git_password}@${git_url}"
     local res_status=1
 
+    # check user.email
     local res_str1=$( \
         cd $dir_path >/dev/null 2>&1 && \
-        git config --local --list | grep "credential.helper" | cut -d '=' -f 2 | tr -d '\n' 2>/dev/null && \
+        git config --local --list | grep "user.email" | cut -d '=' -f 2 | tr -d '\n' 2>/dev/null && \
         cd - >/dev/null 2>&1 \
     )
     local res_status1=$?
 
     local res_status2=0
-    if [ $res_status1 -ne 0 ] || [ "$res_str1" != "store" ]; then
+    if [ $res_status1 -ne 0 ] || [ "${res_str1}" != "${git_user_email}" ]; then
         local res_str2=$( \
             cd $dir_path >/dev/null 2>&1 && \
-            git config --local credential.helper store >/dev/null 2>&1 && \
+            git config --local user.email "${git_user_email}" >/dev/null 2>&1 && \
             cd - >/dev/null 2>&1 \
         )
         local res_status2=$?
     fi
 
-    if [ -f ~/.git-credentials ]; then
-        local res_str3=$(cat ~/.git-credentials | tr -d '\n')
-        local res_status3=$?
-    fi
+    # check user.name
+    local res_str3=$( \
+        cd $dir_path >/dev/null 2>&1 && \
+        git config --local --list | grep "user.name" | cut -d '=' -f 2 | tr -d '\n' 2>/dev/null && \
+        cd - >/dev/null 2>&1 \
+    )
+    local res_status3=$?
 
     local res_status4=0
-    if [ "$res_str3" != "${git_credential}" ]; then
-        local res_str4=$(echo "${git_credential}" > ~/.git-credentials)
+    if [ $res_status3 -ne 0 ] || [ "${res_str3}" != "${git_user_name}" ]; then
+        local res_str4=$( \
+            cd $dir_path >/dev/null 2>&1 && \
+            git config --local user.name "${git_user_name}" >/dev/null 2>&1 && \
+            cd - >/dev/null 2>&1 \
+        )
         local res_status4=$?
     fi
 
-    if [ $res_status2 -eq 0 ] && [ $res_status4 -eq 0 ]; then
+    # check credential.helper
+    local res_str5=$( \
+        cd $dir_path >/dev/null 2>&1 && \
+        git config --local --list | grep "credential.helper" | cut -d '=' -f 2 | tr -d '\n' 2>/dev/null && \
+        cd - >/dev/null 2>&1 \
+    )
+    local res_status5=$?
+
+    local res_status6=0
+    if [ $res_status5 -ne 0 ] || [ "$res_str5" != "store" ]; then
+        local res_str6=$( \
+            cd $dir_path >/dev/null 2>&1 && \
+            git config --local credential.helper store >/dev/null 2>&1 && \
+            cd - >/dev/null 2>&1 \
+        )
+        local res_status6=$?
+    fi
+
+    # check ~/.git-credentials
+    if [ -f ~/.git-credentials ]; then
+        local res_str7=$(cat ~/.git-credentials | tr -d '\n')
+        local res_status7=$?
+    else
+        local res_str7=""
+    fi
+
+    local res_status8=0
+    if [ "$res_str7" != "${git_credential}" ]; then
+        local res_str8=$(echo "${git_credential}" > ~/.git-credentials)
+        local res_status8=$?
+    fi
+
+    if [ $res_status2 -eq 0 ] && [ $res_status4 -eq 0 ] && [ $res_status6 -eq 0 ] && [ $res_status8 -eq 0 ]; then
         res_status=0
     fi
     echo -n "${res_status}"
@@ -90,13 +132,15 @@ exit_code=0
 source "${this_dir_path}/Backup.config"
 
 git_url=$GitURL
+git_user_email=$GitUserEmail
+git_user_name=$GitUserName
 git_username=${Git[0]}
 git_password=${Git[1]}
 git_repo_name=${Git[2]}
 
 if [[ $action == "show-restore-points" ]]; then
     # check git config
-    res_gitcheckconfig=$(gitCheckConfig "${git_url}" "${git_username}" "${git_password}" "${git_repo_name}" "${this_dir_path}")
+    res_gitcheckconfig=$(gitCheckConfig "${git_url}" "${git_user_email}" "${git_user_name}" "${git_username}" "${git_password}" "${git_repo_name}" "${this_dir_path}")
     
     # git fetch new commits
     res_str_fetch=$( \
@@ -121,7 +165,7 @@ elif [[ $action == "restore" ]]; then
     commit_id=""
 
     # check git config
-    res_gitcheckconfig=$(gitCheckConfig "${git_url}" "${git_username}" "${git_password}" "${git_repo_name}" "${this_dir_path}")
+    res_gitcheckconfig=$(gitCheckConfig "${git_url}" "${git_user_email}" "${git_user_name}" "${git_username}" "${git_password}" "${git_repo_name}" "${this_dir_path}")
     
     # git fetch new commits
     res_str_fetch=$( \
