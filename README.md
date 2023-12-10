@@ -18,7 +18,7 @@
 4. run `git clone https://github.com/arminmokri/WPBackupViaGit.git`
 5. run `cd WPBackupViaGit`
 6. Copy **WPBackupViaGit** files to your repository directory
-    - for example `cp Backup.sh Backup.config database_backup.sh database_restore.sh ../your_repo_dir`
+    - for example `cp Backup.sh Restore.sh Backup.config database_backup.sh database_restore.sh ../your_repo_dir`
 7. run `cd ..`
 8. Open **Backup.config** file in vim or nano or vi or etc
     - for example `vi your_repo_dir/Backup.config`
