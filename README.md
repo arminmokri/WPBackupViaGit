@@ -1,4 +1,5 @@
 # WPBackupViaGit
+### Please support my repo with your star.
 **WPBackupViaGit** is for making backup and restore on a git account with any frequency.
 
 ## Features
