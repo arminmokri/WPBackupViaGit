@@ -1,6 +1,6 @@
 # WPBackupViaGit
 ### Please support my repo with your star.
-**WPBackupViaGit** is for making backup and restore on a git account with any frequency such as WordPress, etc.
+**WPBackupViaGit** is for creating a backup point from the website on a git account with any frequency and restoring to any backup point, such as WordPress, etc.
 
 ## Features
 - Backup from databases
