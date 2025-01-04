@@ -194,6 +194,32 @@ elif [[ $action == "restore" ]]; then
         commit_id=$restorePoint
     fi
 
+    # Remove Files
+    if [ $exit_code -eq 0 ]; then
+        for ((i=0; i<${#Dir[@]}; i+=3)); do
+            # vars
+            dir_path=${Dir[$i]}
+            dir_path_type=${Dir[$i+1]} # relative / absolute
+            dir_backup_type=${Dir[$i+2]} # copy / move
+            dir_abs_path=""
+            if [ "$dir_path_type" == "relative" ]; then
+                dir_abs_path="${this_dir_path}/${dir_path}"
+            elif [ "$dir_path_type" == "absolute" ]; then
+                dir_abs_path="${dir_path}"
+            fi
+            dir_name=$(basename "${dir_abs_path}")
+
+            # remove restore dir/file if exist
+            if [ -e "${dir_abs_path}" ]; then
+                rm -rf "${dir_abs_path}"
+                echo "delete '${dir_abs_path}' for restore dir/file '${dir_path}' successfully completed."
+            fi
+
+            # sleep
+            sleep 1
+        done
+    fi
+
     # git goto specific commit id
     if [[ $restorePointType == "index" ]] || [[ $restorePointType == "commit-id" ]]; then
         res_str_reset=$( \
@@ -235,7 +261,7 @@ elif [[ $action == "restore" ]]; then
         done
     fi
 
-    # File
+    # Restore Files
     if [ $exit_code -eq 0 ]; then
         for ((i=0; i<${#Dir[@]}; i+=3)); do
             # vars
@@ -249,12 +275,6 @@ elif [[ $action == "restore" ]]; then
                 dir_abs_path="${dir_path}"
             fi
             dir_name=$(basename "${dir_abs_path}")
-
-            # remove restore dir/file if exist
-            if [ -e "${dir_abs_path}" ]; then
-                rm -rf "${dir_abs_path}"
-                echo "delete '${dir_abs_path}' for restore dir/file '${dir_path}' successfully completed."
-            fi
 
             # do restore dir/file
             if [ -e "${this_dir_path}/${dir_name}" ]; then
